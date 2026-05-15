@@ -28,7 +28,8 @@ from aswaxs_live.viewer import LiveCurveViewer
 PACKAGE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = PACKAGE_DIR.parents[1]
 PLAYGROUND_DIR = PROJECT_DIR.parent
-DEFAULT_PIPELINE_ROOT = PLAYGROUND_DIR / "ASWAXS_reduction_pipeline"
+LEGACY_PIPELINE_ROOT = PLAYGROUND_DIR / "ASWAXS_reduction_pipeline"
+DEFAULT_PIPELINE_ROOT = ""
 DEFAULT_OUTPUT_DIR = PROJECT_DIR / "outputs" / "live_gui_run"
 DEFAULT_MANIFEST = (
     DEFAULT_PIPELINE_ROOT
@@ -444,6 +445,8 @@ class SetupWindow(QtWidgets.QMainWindow):
                 self._set_widget_value(widget, settings[key])
         if settings.get("detector_run_mode") == "SAXS + WAXS":
             self.detector_run_mode_combo.setCurrentText("Pil300K + Eig1M")
+        if Path(self.pipeline_root_edit.text()).expanduser() == LEGACY_PIPELINE_ROOT:
+            self.pipeline_root_edit.clear()
         self._migrate_dual_detector_settings()
         self.statusBar().showMessage(f"Loaded previous settings from {SETTINGS_PATH.name}")
 
@@ -605,7 +608,7 @@ class SetupWindow(QtWidgets.QMainWindow):
         self.analysis_h5_edit = self._line("")
         self._path_row(form, "Analysis HDF5", self.analysis_h5_edit, "save_file")
         self.pipeline_root_edit = self._line(str(DEFAULT_PIPELINE_ROOT))
-        self._path_row(form, "Pipeline root", self.pipeline_root_edit, "dir")
+        self._path_row(form, "External pipeline root (optional)", self.pipeline_root_edit, "dir")
         self.poni_edit = self._line(str(DEFAULT_PONI))
         self._path_row(form, "PONI", self.poni_edit, "PONI files (*.poni);;All files (*)")
         self.mask_edit = self._line(str(DEFAULT_MASK))

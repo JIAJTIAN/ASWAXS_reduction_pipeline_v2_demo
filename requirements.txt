@@ -1,6 +1,6 @@
+fabio
 h5py
 matplotlib
 numpy
 pyFAI
 PyQt5
-

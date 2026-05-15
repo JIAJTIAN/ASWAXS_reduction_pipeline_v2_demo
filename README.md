@@ -1,8 +1,8 @@
 # ASWAXS Pipeline V2 Live Demo
 
-This folder is a demo project for the next pipeline design. It does not replace the
-current reduction project. Instead, it imports the current reduction functions and
-adds a live-style scheduler around them.
+This folder is a demo project for the next pipeline design. It now includes the
+core reduction scripts from the previous pipeline under `src/aswaxs_live/core/`,
+so the repository can run without a separate checkout of the older project.
 
 The demo uses a manifest replay as a stand-in for real acquisition:
 
@@ -25,7 +25,7 @@ real file watcher or Bluesky event stream.
 ASWAXS_reduction_pipeline_v2_demo/
   docs/                  project notes
   scripts/               run launchers; no install step needed
-  src/aswaxs_live/       reducer, GUI, and viewer source code
+  src/aswaxs_live/       reducer, GUI, viewer, and copied reduction core
   outputs/               ignored local analysis output
 ```
 

@@ -158,8 +158,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--num-frames", type=int, default=None, help="Watcher: expected frames per group.")
     parser.add_argument(
         "--pipeline-root",
-        default=str(DEFAULT_PIPELINE_ROOT),
-        help="Path to the current ASWAXS_reduction_pipeline project.",
+        default="",
+        help="Optional fallback path to an external older ASWAXS_reduction_pipeline project.",
     )
     parser.add_argument(
         "--output-dir",
@@ -641,25 +641,50 @@ def make_runtime_args(args: argparse.Namespace) -> argparse.Namespace:
     )
 
 
-def load_v1_functions(pipeline_root: Path) -> argparse.Namespace:
-    """Import the current project functions used by the live scheduler."""
-    import_v1_pipeline(pipeline_root)
-    from reduce_aswaxs_sequence import (  # pylint: disable=import-error,import-outside-toplevel
-        FinalOutput,
-        FrameCurve,
-        ManifestItem,
-        _write_sequence_analysis_h5,
-        average_groups,
-        build_final_record,
-        default_monitor_key,
-        estimate_constant_fluorescence,
-        infer_detector,
-        read_manifest,
-        reduce_manifest_frames,
-        write_final_sample_outputs,
-        write_group_average,
-        write_summary,
-    )
+def load_v1_functions(pipeline_root: Path | None = None) -> argparse.Namespace:
+    """Import the reduction functions used by the live scheduler.
+
+    The v2 project now carries a local copy of the reduction core so the GitHub
+    repo can run by itself. ``pipeline_root`` remains as a fallback override for
+    comparing against an external older project.
+    """
+    try:
+        from aswaxs_live.core.reduce_aswaxs_sequence import (  # pylint: disable=import-outside-toplevel
+            FinalOutput,
+            FrameCurve,
+            ManifestItem,
+            _write_sequence_analysis_h5,
+            average_groups,
+            build_final_record,
+            default_monitor_key,
+            estimate_constant_fluorescence,
+            infer_detector,
+            read_manifest,
+            reduce_manifest_frames,
+            write_final_sample_outputs,
+            write_group_average,
+            write_summary,
+        )
+    except ImportError:
+        if pipeline_root is None:
+            raise
+        import_v1_pipeline(pipeline_root)
+        from reduce_aswaxs_sequence import (  # pylint: disable=import-error,import-outside-toplevel
+            FinalOutput,
+            FrameCurve,
+            ManifestItem,
+            _write_sequence_analysis_h5,
+            average_groups,
+            build_final_record,
+            default_monitor_key,
+            estimate_constant_fluorescence,
+            infer_detector,
+            read_manifest,
+            reduce_manifest_frames,
+            write_final_sample_outputs,
+            write_group_average,
+            write_summary,
+        )
 
     return argparse.Namespace(
         FinalOutput=FinalOutput,
@@ -937,7 +962,7 @@ class LivePipelineState:
 
 
 def replay_live_pipeline(args: argparse.Namespace) -> int:
-    v1 = load_v1_functions(Path(args.pipeline_root))
+    v1 = load_v1_functions(Path(args.pipeline_root) if args.pipeline_root else None)
     output_dir = Path(args.output_dir).expanduser().resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     analysis_path = prepare_output_records_for_run(args, output_dir)
@@ -1006,7 +1031,7 @@ def watch_live_pipeline(args: argparse.Namespace) -> int:
     if args.num_groups is None or args.num_frames is None:
         raise ValueError("Watcher mode requires --num-groups and --num-frames.")
 
-    v1 = load_v1_functions(Path(args.pipeline_root))
+    v1 = load_v1_functions(Path(args.pipeline_root) if args.pipeline_root else None)
     watch_dir = Path(args.watch_dir).expanduser().resolve()
     output_dir = Path(args.output_dir).expanduser().resolve()
     if not watch_dir.exists():

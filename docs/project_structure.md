@@ -17,6 +17,12 @@ ASWAXS_reduction_pipeline_v2_demo/
   src/
     aswaxs_live/
       __init__.py
+      core/
+        __init__.py
+        analysis_h5.py
+        reduce_aswaxs_sequence.py
+        reduce_sequence.py
+        reduction_pipeline.py
       gui.py
       reducer.py
       stitcher.py
@@ -28,6 +34,8 @@ Main modules:
 
 - `aswaxs_live.reducer`: manifest replay, folder watcher, HDF5 analysis writing,
   resume/restart behavior.
+- `aswaxs_live.core`: copied reduction science code from the previous pipeline,
+  kept inside this repository so v2 can run by itself.
 - `aswaxs_live.viewer`: live curve viewer for single frames, group averages, and
   final ASAXS curves.
 - `aswaxs_live.stitcher`: combines detector-named analysis records into one
