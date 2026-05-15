@@ -1,0 +1,42 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Local virtual environments
+.venv/
+venv/
+env/
+
+# Local GUI/user state
+.aswaxs_live_gui_settings.json
+
+# Generated pipeline outputs and large data files
+outputs/
+*.h5
+*.hdf5
+*.nxs
+*.dat
+*.jsonl
+*.log
+
+# Generated run tables/manifests. Keep requirements.txt tracked.
+*.csv
+!requirements.txt
+
+# Local secrets/config overrides
+.env
+.env.*
+
+# OS/editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
