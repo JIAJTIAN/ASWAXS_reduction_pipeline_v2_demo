@@ -32,7 +32,7 @@ LEGACY_PIPELINE_ROOT = PLAYGROUND_DIR / "ASWAXS_reduction_pipeline"
 DEFAULT_PIPELINE_ROOT = ""
 DEFAULT_OUTPUT_DIR = PROJECT_DIR / "outputs" / "live_gui_run"
 DEFAULT_MANIFEST = (
-    DEFAULT_PIPELINE_ROOT
+    LEGACY_PIPELINE_ROOT
     / "outputs"
     / "FC_AuSiO2NP_60uL_min_Eig1M_reduced_no_fluorescence"
     / "sequence_manifest.csv"
